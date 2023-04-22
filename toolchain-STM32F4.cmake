@@ -9,45 +9,41 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 
-set(ARM_OPTIONS 
+# Common gcc options for STM32F4
+set(ARM_OPTIONS   
   -mcpu=cortex-m4
   -mfpu=fpv4-sp-d16 
   -mfloat-abi=hard 
-  -mthumb
+  -mthumb 
   --specs=nano.specs
 )
 
+# Common compile definitions for STM32F4
+add_compile_definitions(
+    STM32F439xx
+)
+
+# Common assembly options
 set(CMAKE_ASM_FLAGS
   "-x assembler-with-cpp"
 )
 
+# Common compiler options
 add_compile_options(
     ${ARM_OPTIONS}
-    -fmessage-length=0
-    -funsigned-char
-    -ffunction-sections
-    -fdata-sections
+    # -ffunction-sections # recommended, but do not prematurely optimize
+    # -fdata-sections # recommended, but do not prematurely optimize
     -fstack-usage
-    #-fcyclomatic-complexity
     -MMD
     -MP
 )
 
-add_compile_definitions(
-    STM32F439xx
-    USE_FULL_ASSERT
-    OS_USE_TRACE_SEMIHOSTING_STDOUT
-    OS_USE_SEMIHOSTING
-)
-
+# Common linker options
 add_link_options(
-    ${ARM_OPTIONS}
-    --specs=nosys.specs
-    -u_printf_float
-    -u_scanf_float
-    #-nostartfiles
-    LINKER:--gc-sections
-    LINKER:--build-id
+  ${ARM_OPTIONS}
+  --specs=nosys.specs
+  -static # prevent any dynamic linking with shared libraries
+  # LINKER:--gc-sections # recommended, but do not prematurely optimize
 )
 
 # Search paths
