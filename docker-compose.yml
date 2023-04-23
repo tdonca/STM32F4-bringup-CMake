@@ -1,0 +1,5 @@
+services:
+  project-build:
+    image: project-build
+    volumes:
+      - "./:/home/workspace" # mount current directory into the container
