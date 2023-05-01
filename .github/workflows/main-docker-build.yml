@@ -2,7 +2,24 @@ on: [push]
 
 
 jobs:
-  hello_world_job:
+  unit_tests_job:
+    runs-on: ubuntu-latest
+    name: Build and run unit tests using CMake on x86
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Hello world action step
+        uses: ./actions/unit-test-docker-action/ # Uses an action in the root directory
+        id: hello-unit-test
+        with:
+          who-to-greet: 'Mona the Octocat'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
+
+  cross_compile_build_job:
     runs-on: ubuntu-latest
     name: Cross-compiling with CMake using gcc-arm-none-eabi
     steps:
